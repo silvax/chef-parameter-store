@@ -1,5 +1,10 @@
-Chef::Log.info("******Retrieving parameters from store.******")
 
+Chef::Log.info("******Installing aws-sdk prerequisite******")
+gem_package 'aws-sdk' do
+  action :install
+end
+
+Chef::Log.info("******Retrieving parameters from store.******")
 ruby_block "load-parameters" do
   block do
     require 'aws-sdk'
