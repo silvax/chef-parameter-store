@@ -7,7 +7,7 @@ end
 Chef::Log.info("******Retrieving parameters from store.******")
 ruby_block "load-parameters" do
   block do
-    require 'aws-sdk'
+    #require 'aws-sdk'
     #stack = search("aws_opsworks_stack").first
     ssm = Aws::SSM::Client.new
 
