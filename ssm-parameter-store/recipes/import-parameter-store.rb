@@ -1,13 +1,13 @@
 
 Chef::Log.info("******Installing aws-sdk prerequisite******")
-gem_package 'aws-sdk' do
-  action :install
+chef_gem "aws-sdk" do
+  compile_time false
 end
 
 Chef::Log.info("******Retrieving parameters from store.******")
 ruby_block "load-parameters" do
   block do
-    #require 'aws-sdk'
+    require 'aws-sdk'
     #stack = search("aws_opsworks_stack").first
     ssm = Aws::SSM::Client.new
 
