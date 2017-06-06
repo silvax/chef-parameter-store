@@ -9,7 +9,9 @@ ruby_block "load-parameters" do
   block do
     require 'aws-sdk'
     #stack = search("aws_opsworks_stack").first
-    ssm = Aws::SSM::Client.new
+    ssm = Aws::SSM::Client.new(
+      region: "us-east-1",
+    )
 
     allparameters = ssm.describe_parameters({
       # filters: [
