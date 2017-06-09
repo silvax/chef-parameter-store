@@ -1,15 +1,15 @@
 require 'aws-sdk'
 require 'yaml'
 
-stack = node["opsworks"]["stack"]["name"]
-layer = node["opsworks"]["layers"]["layershortname"]["name"]
+stack = stack = search("aws_opsworks_stack").first
+layer = layer = search("aws_opsworks_layer").first
 
 ssm = Aws::SSM::Client.new(
   region: "us-east-1",
 )
 allparameters = {}
 stackparameters = {}
-allparameters[:all] = ssm.describe_parameters({filters: [{key: "Name", values: ["ow_#{stack}_#{layer}"]}]})
+allparameters[:all] = ssm.describe_parameters({filters: [{key: "Name", values: ["ow_#{stack['name']}_#{layer['shortname']}"]}]})
 
 allparameters[:all][:parameters].each do |ssmparameter|
   resp = ssm.get_parameters({
