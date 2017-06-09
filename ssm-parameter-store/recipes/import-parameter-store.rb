@@ -1,8 +1,8 @@
 require 'aws-sdk'
 require 'yaml'
 
-stack = search("aws_opsworks_stack").first
-layer = search("aws_opsworks_layer").first
+stack = node["opsworks"]["stack"]["name"]
+layer = node["opsworks"]["layers"]["layershortname"]["name"]
 
 ssm = Aws::SSM::Client.new(
   region: "us-east-1",
