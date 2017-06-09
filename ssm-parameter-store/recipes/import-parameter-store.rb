@@ -1,37 +1,20 @@
+require 'aws-sdk'
+require 'yaml'
 
-Chef::Log.info("******Installing aws-sdk prerequisite******")
-chef_gem "aws-sdk" do
-  compile_time false
-end
+stack = search("aws_opsworks_stack").first
+layer = search("aws_opsworks_layer").first
 
-Chef::Log.info("******Retrieving parameters from store.******")
-ruby_block "load-parameters" do
-  block do
-    require 'aws-sdk'
-    #stack = search("aws_opsworks_stack").first
-    ssm = Aws::SSM::Client.new(
-      region: "us-east-1",
-    )
+ssm = Aws::SSM::Client.new(
+  region: "us-east-1",
+)
+allparameters = {}
+stackparameters = {}
+allparameters[:all] = ssm.describe_parameters({filters: [{key: "Name", values: ["ow_#{stack}_#{layer}"]}]})
 
-    allparameters = ssm.describe_parameters({
-      # filters: [
-      #   {
-      #     key: "Name", # accepts Name, Type, KeyId
-      #     values: ["^ow_#{stack}"], # required
-      #   },
-      # ],
-      # next_token: "NextToken",
-    })
-
-    for each_parameter in all_parameters
-
-      # resp = ssm.get_parameters({
-      #   names: ["ow_#{stack}"], # required
-      #   with_decryption: false,
-      # })
-      puts "#{each_parameter}"
-
-    end
-  end
-  action :run
+allparameters[:all][:parameters].each do |ssmparameter|
+  resp = ssm.get_parameters({
+    names: [ssmparameter[:name]],
+    with_decryption: false,
+  })
+  node.default["#{resp[:parameters][0][:name]}"] = resp[:parameters][0][:value]
 end
