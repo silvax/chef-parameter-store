@@ -9,7 +9,7 @@ ssm = Aws::SSM::Client.new(
 )
 allparameters = {}
 stackparameters = {}
-allparameters[:all] = ssm.describe_parameters({filters: [{key: "Name", values: ["ow_#{stack['name']}_#{layer['shortname']}"]}]})
+allparameters[:all] = ssm.describe_parameters({filters: [{key: "Name", values: ["/opsworks/parameter-store-test/mlayer/"]}]})
 
 allparameters[:all][:parameters].each do |ssmparameter|
   resp = ssm.get_parameters({
